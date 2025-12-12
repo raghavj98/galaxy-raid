@@ -11,4 +11,9 @@ class Drawable {
         virtual void Draw() {};
 };
 
+class InputSubscriber {
+    public:
+        virtual bool HandleInput(int key) {return false;};
+};
+
 #endif

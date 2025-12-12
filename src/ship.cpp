@@ -5,7 +5,8 @@
 
 Ship::Ship(Color color, float mass, float scale) : m_color(color), m_mass(mass), m_scale(scale) {
     vel = {0,0};
-    points[0] = {600,400};
+    points[0].x = 600;
+    points[0].y = 400;
     _calculatePoints();
     angle = 0.f;
 }
@@ -40,4 +41,21 @@ void Ship::applyThrust(float power) {
 
 void Ship::applyTorque(float power) {
     torque = power; 
+}
+
+bool Ship::HandleInput(int key) {
+    if (key == KEY_W) {
+        applyThrust(5);
+        return true;
+    } else if (key == KEY_A) {
+        applyTorque(-2);
+        return true;
+    } else if (key == KEY_D) {
+        applyTorque(2);
+        return true;
+    } else if (key == KEY_S) {
+        applyThrust(0);
+        return true;
+    }
+    return false;
 }
