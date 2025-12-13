@@ -1,5 +1,18 @@
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
+#include <vector>
+
+enum InputState {
+    DOWN,
+    PRSD,
+    PRPT,
+};
+
+struct Control {
+    int bind;
+    InputState state;
+    const char* label;
+};
 
 class Ticker {
     public:
@@ -13,7 +26,8 @@ class Drawable {
 
 class InputSubscriber {
     public:
-        virtual bool HandleInput(int key) {return false;};
+        virtual bool HandleInput(int ctrl_idx) {return false;};
+        std::vector<Control> controls;
 };
 
 #endif

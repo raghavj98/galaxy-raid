@@ -17,12 +17,16 @@ class Ship : public Ticker , public Drawable, public InputSubscriber {
     Vector2 thrust;
 
     float rot_vel;
+    float rot_vel_damp = 1;
     float torque;
+
+    float power;
 
     public:
     // Entity methods
     void Draw() override;
     void Tick(float time) override {
+        rot_vel_damp *= 0.9;
         updateRot(time);
         updatePos(time);
     }
@@ -32,7 +36,8 @@ class Ship : public Ticker , public Drawable, public InputSubscriber {
     void _calculatePoints();
     void updatePos(float time);
     void updateRot(float time);
-    void applyThrust(float power);
+    void incrThrust();
+    void decrThrust();
     void applyTorque(float power);
     Vector2 getPos() const {
         return points[0];

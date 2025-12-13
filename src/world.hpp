@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <array>
+#include <map>
 #include "raylib.h"
 #include "entity.hpp"
 
@@ -20,6 +21,12 @@ private:
     KEY_D
   };
   std::function<Vector2(void)> focusCallable;
+  std::map<InputState, std::function<bool(int)>> getInputStateMap = {
+    {InputState::DOWN, [](int key){return IsKeyDown(key);}},
+    {InputState::PRSD, [](int key){return IsKeyPressed(key);}},
+    {InputState::PRPT, [](int key){return IsKeyPressedRepeat(key);}},
+  };
+  std::map<int, int> customBinds = {};
 
 public:
   World() {}; // Make a singleton?
@@ -31,6 +38,10 @@ public:
   void setFocusCallable(std::function<Vector2(void)> callable);
   Vector2 getFocus();
   void HandleInput();
+
+  void setCustomBind(int original, int rebind) {
+    customBinds[original] =  rebind;
+  }
 };
 
 World MakeWorld();

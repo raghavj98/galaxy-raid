@@ -34,6 +34,7 @@ int main() {
     }
     EndMode2D();
     }
+    // DrawFPS(10,10);
     EndDrawing();
   }
   CloseWindow();

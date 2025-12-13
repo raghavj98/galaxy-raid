@@ -4,13 +4,13 @@
 World MakeWorld() {
   auto world = World();
   auto ship = std::make_shared<Ship>();
-  ship->applyThrust(2);
   world.addTicker(ship);
   world.addDrawable(ship);
   world.addInputSubscriber(ship);
   world.setFocusCallable([ship] {return ship->getPos();});
   return world;
 }
+
 
 void World::addTicker(std::shared_ptr<Ticker> ticker) {
   tickers.push_back(std::move(ticker));
@@ -38,10 +38,17 @@ Vector2 World::getFocus() {
   return focusCallable();
 }
 void World::HandleInput() {
-  for (auto& key : inputs) {
-    if (!IsKeyPressed(key)) continue;
-    for (auto& inputSub : inputSubs) {
-      if (inputSub->HandleInput(key)) break;
+  for (auto& inputSub : inputSubs) {
+    int idx = 0;
+    for (auto& control : inputSub->controls) {
+      int customBind = control.bind;
+      if (customBinds.contains(control.bind)) {
+        customBind = customBinds[control.bind];
+      }
+      if (getInputStateMap[control.state](customBind)) {
+        inputSub->HandleInput(idx);
+      }
+      idx++;
     }
   }
 }
