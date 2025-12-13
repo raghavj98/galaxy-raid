@@ -4,6 +4,7 @@ project(spaceship LANGUAGES CXX)
 file(GLOB_RECURSE SOURCES 
     src/main.cpp
     src/ship.cpp
+    src/world.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
