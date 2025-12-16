@@ -11,11 +11,37 @@ Ship::Ship(Color color, float mass, float scale) : m_color(color), m_mass(mass),
     angle = 0.f;
     controls = {
         Control{.bind = KEY_W, .state = InputState::PRPT, .label = "Thrust Increase"},  
-        Control{.bind = KEY_A, .state = InputState::DOWN, .label = "Torque CounterCW"}, 
-        Control{.bind = KEY_D, .state = InputState::DOWN, .label = "Torque ClockWise"}, 
+        Control{.bind = KEY_A, .state = InputState::PRSD, .label = "Torque CounterCW"}, 
+        Control{.bind = KEY_D, .state = InputState::PRSD, .label = "Torque ClockWise"}, 
         Control{.bind = KEY_S, .state = InputState::PRPT, .label = "Thrust Decrease"},  
     };
-    power = 2;
+    power = 0;
+}
+
+bool Ship::HandleInput(int input_mask) {
+    bool retval = false;
+    auto pos = points[0] + Vector2(10,10);
+    if (input_mask & 1) { // Control idx 0 is true
+        incrThrust();
+        retval = true;
+    }
+    if (input_mask & 2) { // Control idx 1 is true
+        applyTorque(-100);
+        retval = true;
+    }
+    if (input_mask & 4) { // Control idx 2 is true
+        applyTorque(100);
+        retval = true;
+    }
+    if (input_mask & 8) { // Control idx 3 is true
+        decrThrust();
+        retval = true;
+    }
+    if (!(input_mask & 6)) {
+        applyTorque(0);
+        retval = true;
+    }
+    return retval;
 }
 
 void Ship::_calculatePoints() {
@@ -38,16 +64,15 @@ void Ship::updatePos(float time) {
 }
 
 void Ship::updateRot(float time) {
-    rot_vel_damp *= 0.95;
     rot_vel += torque * time;
-    rot_vel *= rot_vel_damp;
     angle += rot_vel * time;
+    if (rot_vel <= 0.01f && rot_vel >= -0.01f) rot_vel = 0;
     thrust = Vector2Rotate({0, -1}, angle) * power;
 }
 
 void Ship::incrThrust() {
-    if (power >= 100) {
-        power = 100;
+    if (power >= max_power) {
+        power = max_power;
         return;
     }
     power += 2;
@@ -62,26 +87,5 @@ void Ship::decrThrust() {
 }
 
 void Ship::applyTorque(float power) {
-    rot_vel_damp = 1;
     torque = power; 
-}
-
-bool Ship::HandleInput(int ctrl_idx) {
-    switch (ctrl_idx) {
-        case 0:
-            incrThrust();
-            break;
-        case 1:
-            applyTorque(-20);
-            break;
-        case 2:
-            applyTorque(20);
-            break;
-        case 3:
-            decrThrust();
-            break;
-        default:
-            return false;
-    }
-    return true;
 }

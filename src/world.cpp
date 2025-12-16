@@ -40,15 +40,15 @@ Vector2 World::getFocus() {
 void World::HandleInput() {
   for (auto& inputSub : inputSubs) {
     int idx = 0;
+    int input_mask = 0;
     for (auto& control : inputSub->controls) {
       int customBind = control.bind;
       if (customBinds.contains(control.bind)) {
         customBind = customBinds[control.bind];
       }
-      if (getInputStateMap[control.state](customBind)) {
-        inputSub->HandleInput(idx);
-      }
+      input_mask |= (getInputStateMap[control.state](customBind) << idx);
       idx++;
     }
+    inputSub->HandleInput(input_mask);
   }
 }

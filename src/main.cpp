@@ -17,8 +17,8 @@ int main() {
     camera.target = w.getFocus();
     int gridOriginX = (((int)camera.target.x - width/2)/100)*100;
     int gridOriginY = (((int)camera.target.y - height/2)/100)*100;
-    w.HandleInput();
     w.Tick(GetFrameTime());
+    w.HandleInput();
     BeginDrawing(); {
     BeginMode2D(camera); {
 

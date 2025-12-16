@@ -26,7 +26,7 @@ class Drawable {
 
 class InputSubscriber {
     public:
-        virtual bool HandleInput(int ctrl_idx) {return false;};
+        virtual bool HandleInput(int input_mask) {return false;};
         std::vector<Control> controls;
 };
 

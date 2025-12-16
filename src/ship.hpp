@@ -9,28 +9,29 @@ class Ship : public Ticker , public Drawable, public InputSubscriber {
     Color m_color;
     float m_scale;
     float m_mass;
+    float max_power = 100;
+    float power_incr = max_power / 10;
 
     Vector2 points[4];
-    float angle;
-
     Vector2 vel;
     Vector2 thrust;
+    float power; 
 
-    float rot_vel;
-    float rot_vel_damp = 1;
+    float angle;
+    float rot_vel; 
+    float rot_vel_damp = 0.99f;
     float torque;
+    float max_torque = 20;
 
-    float power;
 
     public:
-    // Entity methods
     void Draw() override;
     void Tick(float time) override {
         rot_vel_damp *= 0.9;
         updateRot(time);
         updatePos(time);
     }
-    bool HandleInput(int key) override;
+    bool HandleInput(int input_mask) override;
 
     Ship(Color color = PURPLE, float mass = 10, float scale = 20);
     void _calculatePoints();
